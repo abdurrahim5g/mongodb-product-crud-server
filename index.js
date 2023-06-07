@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 const cors = require("cors");
+const { ObjectId } = require("mongodb");
 const MongoClient = require("mongodb").MongoClient;
 const uri =
   "mongodb+srv://product-crud:RILvKKQbubqk8BH9@cluster0.undypbz.mongodb.net/?retryWrites=true&w=majority";
@@ -27,6 +28,14 @@ const run = async () => {
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find({});
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // Delete operation
+    app.delete("/products/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.deleteOne(query);
       res.send(result);
     });
   } finally {
